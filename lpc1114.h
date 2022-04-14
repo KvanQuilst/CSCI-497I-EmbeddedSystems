@@ -23,18 +23,18 @@ extern struct {
   volatile const unsigned           : 0;
 } SYSABHCLKCTRL;
 
-/* Ch 12, Table 173 */
+/* Ch 12, Table 173 (pg. 192) */
 struct gpio {
-  volatile const unsigned DATA[1<<12];
-  volatile const unsigned PADDING[4096];
-  volatile const unsigned GDIR;
-  volatile const unsigned IS;
-  volatile const unsigned IBE;
-  volatile const unsigned IEV;
-  volatile const unsigned IE;
-  volatile const unsigned RIS;
-  volatile const unsigned MIS;
-  volatile const unsigned IC;
+  volatile unsigned DATA[1<<12];
+  volatile unsigned PADDING[4096];
+  volatile unsigned GDIR;
+  volatile unsigned IS;
+  volatile unsigned IBE;
+  volatile unsigned IEV;
+  volatile unsigned IE;
+  volatile unsigned RIS;
+  volatile unsigned MIS;
+  volatile unsigned IC;
 };
 
 extern struct gpio GPIO0;

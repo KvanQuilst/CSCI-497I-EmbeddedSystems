@@ -9,7 +9,7 @@ SECTIONS {
   
   .text : {
     . = 0x00000000;
-    *(vector);
+    *(.vector);
     . = ALIGN(4);
     *(.text);
     . = ALIGN(4);
@@ -40,10 +40,7 @@ SECTIONS {
 
 
 PROVIDE(__INITIAL_SP = ORIGIN(sram) + LENGTH(sram));
-PROVIDE(__VECTOR_CHECKSUM = 0
-                          - __INITIAL_SP
-                          - (__reset + 1)
-                          - (NMI + 1)
+PROVIDE(__VECTOR_CHECKSUM = 0 - __INITIAL_SP - (__reset + 1) - (NMI + 1)
                           - (Hardfault + 1));
 PROVIDE(SYSABHCLKCTRL = 0x40048080);
 

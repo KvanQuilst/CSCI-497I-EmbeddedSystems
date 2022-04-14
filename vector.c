@@ -11,7 +11,7 @@ unsigned vector[48] __attribute__ ((section(".vector"))) = {
   (unsigned) (&__INITIAL_SP),
   (unsigned) (&__reset) + 1,
   (unsigned) (&NMI) + 1,
-  (unsigned) (&Hardfault),
+  (unsigned) (&Hardfault) + 1,
   0, 0, 0,
   (unsigned) (&__VECTOR_CHECKSUM),
   0, 0, 0, 0, 0, 0, 0, 0,

@@ -10,6 +10,7 @@ extern struct {
     volatile unsigned PSEL  : 2;
     volatile unsigned       : 25; 
   } SYSPLLCTRL;
+  //volatile unsigned SYSPLLCTRL;
 
   /* Table 11 (pg. 29) */
   struct {
@@ -23,7 +24,7 @@ extern struct {
   volatile unsigned IRCCTRL;
   volatile unsigned PADDING1;
   volatile unsigned SYSRSTSTAT;
-  volatile unsigned PADDING2[4];
+  volatile unsigned PADDING2[3];
 
   /* Table 16 (pg. 31) */
   struct {
@@ -53,9 +54,8 @@ extern struct {
 
   volatile unsigned SYSAHBCLKDIV;
   volatile unsigned PADDING4;
-  volatile unsigned SYSAHBCLKCTRL;
 
-  /* Ch 3, Table 21 */
+  /* Table 21 (pg. 33) */
   struct { 
     volatile unsigned SYS       : 1;
     volatile unsigned ROM       : 1;
@@ -78,7 +78,7 @@ extern struct {
     volatile unsigned SSP1      : 1;
     volatile unsigned           : 10;
     volatile unsigned           : 0;
-  } SYSABHCLKCTRL;
+  } SYSAHBCLKCTRL;
 
   volatile unsigned PADDING5[4];
   volatile unsigned SSP0CLKDIV;
@@ -111,7 +111,7 @@ extern struct {
   volatile unsigned PDAWAKECFG;
 
   /* Table 44 (pg. 44) */
-  /*struct {
+  struct {
     volatile unsigned IRCOUT_PD : 1;
     volatile unsigned IRC_PD    : 1;
     volatile unsigned FLASH_PD  : 1;
@@ -121,8 +121,7 @@ extern struct {
     volatile unsigned WDTOSC_PD : 1;
     volatile unsigned SYSPLL    : 1;
     volatile unsigned           : 24;
-  } PDRUNCFG;*/
-  volatile unsigned PDRUNCFG;
+  } PDRUNCFG;
 
   volatile unsigned PADDING13[111];
 } SYSCON;
@@ -143,3 +142,24 @@ struct gpio {
 
 extern struct gpio GPIO0;
 extern struct gpio GPIO1;
+
+/* Ch 18, Table 281 (pg. 337) */
+extern struct {
+  volatile unsigned IR;
+  volatile unsigned TCR;
+  volatile unsigned TC;
+  volatile unsigned PR;
+  volatile unsigned PC;
+  volatile unsigned MCR;
+  volatile unsigned MR0;
+  volatile unsigned MR1;
+  volatile unsigned MR2;
+  volatile unsigned MR3;
+  volatile unsigned CCR;
+  volatile unsigned CR0;
+  volatile unsigned PADDING0[3];
+  volatile unsigned EMR;
+  volatile unsigned PADDING1[12];
+  volatile unsigned CTCR;
+  volatile unsigned PWMC;
+} TMR16B1;

@@ -83,4 +83,3 @@ unsigned vector[48] __attribute__ ((section(".vector"))) = {
 };
 
 void NMI() {}
-void Hardfault() {}

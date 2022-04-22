@@ -24,3 +24,9 @@ void reset() {
   if (loop) while (1) loop();
   else while (1) __asm("wfi");
 }
+
+void Hardfault() {
+  GPIO0.GDIR |= 1 << 7;
+  GPIO0.DATA[1<<7] = ~0;
+  while (1) __asm("wfi");
+}

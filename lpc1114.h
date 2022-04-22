@@ -126,6 +126,79 @@ extern struct {
   volatile unsigned PADDING13[111];
 } SYSCON;
 
+/* Ch 7, Table 56 (pg. 75) */
+extern struct {
+  volatile unsigned PIO2_6;
+  volatile unsigned PADDING0;
+  volatile unsigned PIO2_0;
+  volatile unsigned RESET_PIO0_0;
+  volatile unsigned PIO0_1;
+  volatile unsigned PIO1_8;
+  volatile unsigned PADDING1;
+  volatile unsigned PIO0_2;
+  volatile unsigned PIO2_7;
+  volatile unsigned PIO2_8;
+  volatile unsigned PIO2_1;
+  volatile unsigned PIO0_3;
+  volatile unsigned PIO0_4;
+  volatile unsigned PIO0_5;
+
+  struct {
+    volatile unsigned FUNC  : 3;
+    volatile unsigned MODE  : 2;
+    volatile unsigned HYS   : 1;
+    volatile unsigned       : 4;
+    volatile unsigned OD    : 1;
+    volatile unsigned       : 21;
+  } PIO1_9;
+
+  volatile unsigned PIO3_4;
+  volatile unsigned PIO2_4;
+  volatile unsigned PIO2_5;
+  volatile unsigned PIO3_5;
+  volatile unsigned PIO0_6;
+  volatile unsigned PIO0_7;
+  volatile unsigned PIO2_9;
+  volatile unsigned PIO2_10;
+  volatile unsigned PIO2_2;
+  volatile unsigned PIO0_8;
+  volatile unsigned PIO0_9;
+  volatile unsigned SWCLK_PIO0_10;
+  volatile unsigned PIO1_10;
+  volatile unsigned PIO2_11;
+
+  /* Table 85, (pg. 94) */
+  struct {
+    volatile unsigned FUNC    : 3;
+    volatile unsigned MODE    : 2;
+    volatile unsigned HYS     : 1;
+    volatile unsigned         : 1;
+    volatile unsigned ADMODE  : 1;
+    volatile unsigned         : 2;
+    volatile unsigned OD      : 1;
+    volatile unsigned         : 21;
+  } R_PIO0_11;
+
+  volatile unsigned R_PIO1_0;
+  volatile unsigned R_PIO1_1;
+  volatile unsigned R_PIO1_2;
+  volatile unsigned PIO3_0;
+  volatile unsigned PIO3_1;
+  volatile unsigned PIO2_3;
+  volatile unsigned SWDIO_PIO1_3;
+  volatile unsigned PIO1_4;
+  volatile unsigned PIO1_11;
+  volatile unsigned PIO3_2;
+  volatile unsigned PIO1_5;
+  volatile unsigned PIO1_6;
+  volatile unsigned PIO1_7;
+  volatile unsigned PIO3_3;
+  volatile unsigned SCK_LOC;
+  volatile unsigned DSR_LOC;
+  volatile unsigned DCD_LOC;
+  volatile unsigned RI_LOC;
+} IOCON;
+
 /* Ch 12, Table 173 (pg. 192) */
 struct gpio {
   volatile unsigned DATA[1<<12];
@@ -144,15 +217,64 @@ extern struct gpio GPIO0;
 extern struct gpio GPIO1;
 
 /* Ch 18, Table 281 (pg. 337) */
-extern struct {
-  volatile unsigned IR;
-  volatile unsigned TCR;
+struct tmr16 {
+
+  /* Table 282 (pg. 338) */
+  struct {
+    volatile unsigned MR0 : 1;
+    volatile unsigned MR1 : 1;
+    volatile unsigned MR2 : 1;
+    volatile unsigned MR3 : 1;
+    volatile unsigned CR0 : 1;
+    volatile unsigned     : 27;
+  } IR;
+
+  /* Table 283 (pg. 338) */
+  struct {
+    volatile unsigned CE  : 1;
+    volatile unsigned CR  : 1;
+    volatile unsigned     : 30;
+  } TCR;
+
   volatile unsigned TC;
-  volatile unsigned PR;
+
+  /* Table 285 (pg. 339) */
+  struct {
+    volatile unsigned PR  : 16;
+    volatile unsigned     : 16;
+  } PR;
+
   volatile unsigned PC;
-  volatile unsigned MCR;
-  volatile unsigned MR0;
-  volatile unsigned MR1;
+
+  /* Table 287 (pg. 340) */
+  struct {
+    volatile unsigned MR0I  : 1;
+    volatile unsigned MR0R  : 1;
+    volatile unsigned MR0S  : 1;
+    volatile unsigned MR1I  : 1;
+    volatile unsigned MR1R  : 1;
+    volatile unsigned MR1S  : 1;
+    volatile unsigned MR2I  : 1;
+    volatile unsigned MR2R  : 1;
+    volatile unsigned MR2S  : 1;
+    volatile unsigned MR3I  : 1;
+    volatile unsigned MR3R  : 1;
+    volatile unsigned MR3S  : 1;
+    volatile unsigned       : 20;
+  } MCR;
+
+  /* Table 288 (pg. 341) */
+  struct {
+    volatile unsigned MATCH : 16;
+    volatile unsigned       : 16;
+  } MR0;
+
+  /* Table 288 (pg. 341) */
+  struct {
+    volatile unsigned MATCH : 16;
+    volatile unsigned       : 16;
+  } MR1;
+
   volatile unsigned MR2;
   volatile unsigned MR3;
   volatile unsigned CCR;
@@ -161,5 +283,58 @@ extern struct {
   volatile unsigned EMR;
   volatile unsigned PADDING1[12];
   volatile unsigned CTCR;
-  volatile unsigned PWMC;
-} TMR16B1;
+
+  /* Table 294 (pg. 344) */
+  struct {
+    volatile unsigned PWMEN0  : 1;
+    volatile unsigned PWMEN1  : 1;
+    volatile unsigned PWMEN2  : 1;
+    volatile unsigned PWMEN3  : 1;
+    volatile unsigned         : 28;
+  } PWMC;
+};
+
+extern struct tmr16 TMR16B1;
+
+/* Ch 25, Table 363 (pg. 410) */
+extern struct {
+
+  /* Table 364 (pg. 411) */
+  struct {
+    volatile unsigned SEL     : 8;
+    volatile unsigned CLKDIV  : 8;
+    volatile unsigned BURST   : 1;
+    volatile unsigned CLKS    : 3;
+    volatile unsigned         : 4;
+    volatile unsigned START   : 3;
+    volatile unsigned EDGE    : 1;
+    volatile unsigned         : 4;
+  } CR;
+
+  volatile unsigned GDR; 
+
+  /* Table 366 (pg. 413) */
+  struct {
+    volatile unsigned ADINTEN   : 8;
+    volatile unsigned ADGINTEN  : 1;
+    volatile unsigned           : 23;
+  } INTEN;
+
+  /* Table 367 (pg. 413) */
+  struct {
+    volatile unsigned         : 6;
+    volatile unsigned V_VREF  : 10;
+    volatile unsigned         : 14;
+    volatile unsigned OVERRUN : 1;
+    volatile unsigned DONE    : 1;
+  } DR0;
+  
+  volatile unsigned DR1; 
+  volatile unsigned DR2; 
+  volatile unsigned DR3; 
+  volatile unsigned DR4; 
+  volatile unsigned DR5; 
+  volatile unsigned DR6; 
+  volatile unsigned DR7; 
+  volatile unsigned STAT; 
+} ADC;

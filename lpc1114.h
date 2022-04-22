@@ -338,3 +338,8 @@ extern struct {
   volatile unsigned DR7; 
   volatile unsigned STAT; 
 } ADC;
+
+/* Ch 28, Table 443 (pg. 508) */
+extern struct {
+  volatile unsigned SETENA;
+} ISER;

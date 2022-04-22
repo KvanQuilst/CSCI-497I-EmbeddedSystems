@@ -43,7 +43,8 @@ void IRQ31() __attribute__((weak));
 unsigned vector[48] __attribute__ ((section(".vector"))) = {
   (unsigned) (&__INITIAL_SP),
   (unsigned) (&__reset) + 1,
-  (unsigned) (&NMI) + 1,
+  //(unsigned) (&NMI) + 1,
+  0,
   (unsigned) (&Hardfault) + 1,
   0, 0, 0,
   (unsigned) (&__VECTOR_CHECKSUM),
@@ -81,5 +82,3 @@ unsigned vector[48] __attribute__ ((section(".vector"))) = {
   (unsigned) (&IRQ30) + 1,
   (unsigned) (&IRQ31) + 1
 };
-
-void NMI() {}

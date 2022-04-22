@@ -278,7 +278,9 @@ struct tmr16 {
   volatile unsigned MR2;
   volatile unsigned MR3;
   volatile unsigned CCR;
+
   volatile unsigned CR0;
+
   volatile unsigned PADDING0[3];
   volatile unsigned EMR;
   volatile unsigned PADDING1[12];
@@ -300,7 +302,7 @@ extern struct tmr16 TMR16B1;
 extern struct {
 
   /* Table 364 (pg. 411) */
-  struct {
+  /*struct {
     volatile unsigned SEL     : 8;
     volatile unsigned CLKDIV  : 8;
     volatile unsigned BURST   : 1;
@@ -309,9 +311,11 @@ extern struct {
     volatile unsigned START   : 3;
     volatile unsigned EDGE    : 1;
     volatile unsigned         : 4;
-  } CR;
+  } CR;*/
+  volatile unsigned CR;
 
   volatile unsigned GDR; 
+  volatile unsigned PADDING0;
 
   /* Table 366 (pg. 413) */
   struct {

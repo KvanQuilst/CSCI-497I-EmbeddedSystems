@@ -15,9 +15,17 @@ SECTIONS {
     . = ALIGN(4);
   } > flash
 
+  .init_array : {
+    *(.init_array);
+  } > flash
+
   .rodata : {
     *(.rodata);
     . = ALIGN(4);
+    __THREADS = .;
+    *(.threads);
+    . = ALIGN(4);
+    LONG(0);
   } > flash
 
   .data : {
@@ -36,6 +44,8 @@ SECTIONS {
 	__DATA_END = ADDR(.data) + SIZEOF(.data);
 	__BSS_VMA = ADDR(.bss);
 	__BSS_END = ADDR(.bss) + SIZEOF(.bss);
+  __INIT_ARRAY_VMA = LOADADDR(.init_array);
+  __INIT_ARRAY_END = ADDR(.init_array) + SIZEOF(.init_array);
 }
 
 

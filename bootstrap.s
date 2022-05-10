@@ -12,8 +12,8 @@ __reset:
 .L5:               // Zero BSS
   cmp	  r1, r2
   bne	  .L4
-  ldr	  r0, .L3 + 12
-  ldr   r2, .L3 + 16
+  ldr	  r0, .L3+12
+  ldr   r2, .L3+16
   eor   r3, r3
   b     .L7
 .L6:
@@ -23,7 +23,7 @@ __reset:
   cmp   r0, r2
   bne   .L6
 .L8:                    // Change SP to PSP
-  ldr   r0, .L3 + 28
+  ldr   r0, .L3+28
   ldr   r0, [r0]
   msr   psp, r0
   mrs   r0, control
@@ -31,8 +31,8 @@ __reset:
   orr   r0, r1
   msr   control, r0
 .L9:                      // Run Constructors
-  ldr   r6, .L3 + 20
-  ldr   r7, .L3 + 24
+  ldr   r6, .L3+20
+  ldr   r7, .L3+24
   b     .L11
 .L10:
   ldr   r0, [r6]

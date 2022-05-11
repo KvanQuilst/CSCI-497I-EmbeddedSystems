@@ -11,6 +11,10 @@ static void runlist_append(thread_t *thread);
 __attribute__((constructor)) 
 static void thread_init() {
   thread_t **p = &__THREADS;
+  for (int i = 0; i < 4; i++) {
+    runlist[i].next = 0;
+    runlist[i].end = 0;
+  }
   while (p != 0) {
     runlist_append(*p);
     p++;
@@ -40,6 +44,7 @@ static void runlist_append(thread_t *thread)
   if (thread->priority > 3)
     return;
   thread->next = 0;
-  runlist[thread->priority].end->next = thread;
+  if (runlist[thread->priority].end)
+    runlist[thread->priority].end->next = thread;
   runlist[thread->priority].end = thread;
 }

@@ -21,6 +21,7 @@ void reset() {
 
   /* Enable LED for Hardfault */
   GPIO0.GDIR |= 1 << 7;
+  GPIO0.DATA[1<<7] = 0;
 
   if (setup) setup();
   if (loop) while (1) loop();

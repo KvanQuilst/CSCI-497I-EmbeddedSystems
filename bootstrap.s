@@ -4,15 +4,15 @@ __reset:
   ldr   r1, .L3+4  //VMA
   ldr   r2, .L3+8  //END
   b .L5
-.L4:               // Copy Data to RAM
+.L4:                    // Copy Data to RAM
   ldr   r3, [r0]
   str   r3, [r1]
   add   r0, #4
-  add 	r0, #4
-.L5:               // Zero BSS
+  add 	r1, #4
+.L5:               
   cmp	  r1, r2
   bne	  .L4
-  ldr	  r0, .L3+12
+  ldr	  r0, .L3+12      // Zero BSS
   ldr   r2, .L3+16
   eor   r3, r3
   b     .L7

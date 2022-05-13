@@ -1,4 +1,4 @@
-PROGRAM=adservo
+PROGRAM=blink
 
 CC=gcc-arm
 CFLAGS=-g -mcpu=Cortex-m0 -O0
@@ -19,7 +19,7 @@ all: ${PROGRAM}
 .s.o:
 	${CC} ${CFLAGS} -o $@ -c $<
 
-${PROGRAM}: irq.o vector.o bootstrap.o thread.o ${PROGRAM}.o lpc1114.o
+${PROGRAM}: vector.o bootstrap.o irq.o thread.o ${PROGRAM}.o lpc1114.o
 	${LD} ${LDFLAGS} -o $@ $^
 
 program:

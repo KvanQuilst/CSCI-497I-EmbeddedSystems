@@ -1,7 +1,9 @@
+#pragma once
+
 typedef struct thread_st {
   struct thread_st *next;
   unsigned *sp;
-  unsigned priority;
+  //unsigned priority;
 } thread_t;
 
 typedef struct priority_st {
@@ -10,7 +12,8 @@ typedef struct priority_st {
 } priority;
 
 extern thread_t *CURCTX;
-extern priority runlist[];
+//extern priority runlist[];
+extern thread_t *runlist;
 
 #define SYS_THREAD(name, startfun, priority, stacksize, arg0, arg1, arg2, arg3) \
   struct {                                                        \
@@ -39,11 +42,11 @@ extern priority runlist[];
     void (*pc)();                                                 \
     unsigned psr;                                                 \
   } static name = {                                               \
-    { (void *) (0), &(name.r8), 2 }, {0},                         \
+    { (void *) (0), &(name.r8)}, {0},                         \
       0, 0, 0, 0, 0, 0, 0, 0,                                     \
       arg0, arg1, arg2, arg3, 0, 0,                               \
       startfun, (1<<24)                                           \
   };                                                              \
-  static void *__##name##__ptr __attribute__((section(".threads"))) = &name; \
+  static void *__##name##__ __attribute__((section(".threads"))) = &name; \
 
 void schedule();

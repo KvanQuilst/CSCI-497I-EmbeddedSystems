@@ -24,8 +24,8 @@ SECTIONS {
     . = ALIGN(4);
     __THREADS = .;
     *(.threads);
-    . = ALIGN(4);
     LONG(0);
+    . = ALIGN(4);
   } > flash
 
   .data : {
@@ -48,9 +48,8 @@ SECTIONS {
   __INIT_ARRAY_END = ADDR(.init_array) + SIZEOF(.init_array);
 }
 
-
 PROVIDE(__INITIAL_SP = ORIGIN(sram) + LENGTH(sram));
-PROVIDE(__VECTOR_CHECKSUM = 0 - __INITIAL_SP - (__reset + 1) - 0
+PROVIDE(__VECTOR_CHECKSUM = 0 - __INITIAL_SP - (__reset + 1) - (__irq + 1)
                           - (Hardfault + 1));
 
 PROVIDE(SYSCON = 0x40048000);

@@ -48,13 +48,14 @@ void IRQ31() __attribute__((weak));
 unsigned vector[48] __attribute__ ((section(".vector"))) = {
   (unsigned) (&__INITIAL_SP),
   (unsigned) (&__reset) + 1,
-  (unsigned) (&__irq) + 1,    // NMI
+  (unsigned) (&__irq) + 1,  // NMI
   (unsigned) (&Hardfault) + 1,
   0, 0, 0,
   (unsigned) (&__VECTOR_CHECKSUM),
-  0, 0, 
+  0, 0, 0,
   (unsigned) (&__irq) + 1,  // SVCall
-  0, 0, 0, 0, 0,
+  0, 0, 0, 0,
+  /*(unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
@@ -85,8 +86,14 @@ unsigned vector[48] __attribute__ ((section(".vector"))) = {
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
-  (unsigned) (&__irq) + 1,
-  (unsigned) (&__irq) + 1,
+  (unsigned) (&__irq) + 1,*/
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  (unsigned) (&IRQ17) + 1,
+  //(unsigned) (__irq) + 1,
+  0, 0, 0, 0, 0, 0, 
+  (unsigned) (&IRQ24) + 1,
+  //(unsigned) (__irq) + 1,
+  0, 0, 0, 0, 0, 0, 0
 };
 
 const irq_t __handler[] = {
@@ -103,7 +110,7 @@ const irq_t __handler[] = {
   0,
   &svcall, 
   0, 
-  0, 
+  0,
   &pendingsvc,
   &systick, 
   &IRQ0, 

@@ -12,7 +12,7 @@ static void runlist_append(thread_t *thread);
 
 __attribute__((constructor)) 
 static void thread_init() {
-  thread_t **p = &__THREADS;
+  thread_t **p = (thread_t **) &__main__;
   while (*p != 0) {
     runlist_append(*p);
     p++;

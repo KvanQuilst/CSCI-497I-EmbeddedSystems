@@ -30,6 +30,7 @@ __reset:
   mov   r1, #2
   orr   r0, r1
   msr   control, r0
+  isb
 .L9:                      // Run Constructors
   ldr   r6, .L3+20
   ldr   r7, .L3+24

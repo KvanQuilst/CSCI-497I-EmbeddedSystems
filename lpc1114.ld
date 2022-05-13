@@ -15,17 +15,17 @@ SECTIONS {
     . = ALIGN(4);
   } > flash
 
-  .init_array : {
-    *(.init_array);
-  } > flash
-
   .rodata : {
     *(.rodata);
     . = ALIGN(4);
-    __THREADS = .;
+    __THREAD = .;
     *(.threads);
     LONG(0);
     . = ALIGN(4);
+  } > flash
+
+  .init_array : {
+    *(.init_array);
   } > flash
 
   .data : {

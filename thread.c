@@ -1,18 +1,18 @@
 #include "thread.h"
 
+extern thread_t *__THREAD;
 //SYS_THREAD(main, 0, 3, 64, 0, 0, 0, 0);
 THREAD(main, 0, 64, 0, 0, 0, 0);
 const char *__PSP = ((char *) &__main__) + sizeof(__main__);
 thread_t *CURCTX = (thread_t *) (&__main__);
 //priority runlist[4] = {0};
 thread_t *runlist = 0;
-extern thread_t *__THREADS;
 
 static void runlist_append(thread_t *thread);
 
 __attribute__((constructor)) 
 static void thread_init() {
-  thread_t **p = (thread_t **) &__main__;
+  thread_t **p = &__THREAD;
   while (*p != 0) {
     runlist_append(*p);
     p++;

@@ -55,7 +55,6 @@ unsigned vector[48] __attribute__ ((section(".vector"))) = {
   0, 0, 0,
   (unsigned) (&__irq) + 1,  // SVCall
   0, 0, 0, 0,
-  /*(unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
@@ -86,14 +85,8 @@ unsigned vector[48] __attribute__ ((section(".vector"))) = {
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
   (unsigned) (&__irq) + 1,
-  (unsigned) (&__irq) + 1,*/
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  (unsigned) (&IRQ17) + 1,
-  //(unsigned) (__irq) + 1,
-  0, 0, 0, 0, 0, 0, 
-  (unsigned) (&IRQ24) + 1,
-  //(unsigned) (__irq) + 1,
-  0, 0, 0, 0, 0, 0, 0
+  (unsigned) (&__irq) + 1,
+  (unsigned) (&__irq) + 1
 };
 
 const irq_t __handler[] = {

@@ -1,14 +1,12 @@
 #include "thread.h"
 
-//SYS_THREAD(main, 0, 3, 64, 0, 0, 0, 0);
-THREAD(__main__, 0, 64, 0, 0, 0, 0);
+SYS_THREAD(__main__, 0, 3, 64, 0, 0, 0, 0);
+//THREAD(__main__, 0, 64, 0, 0, 0, 0);
 const char *__PSP = ((char *) &(__main__) + sizeof(__main__));
 thread_t *CURCTX = (thread_t *) (&__main__);
-//priority runlist[4] = {0};
-thread_t *runlist = 0;
+priority runlist[4] = {0};
+//thread_t *runlist = 0;
 extern thread_t *__THREAD;
-
-static void runlist_append(thread_t *thread);
 
 __attribute__((constructor)) 
 static void thread_init() {
@@ -19,7 +17,7 @@ static void thread_init() {
   }
 }
 
-/*void schedule() {
+void schedule() {
   if (CURCTX)
     runlist_append(CURCTX);
   if (runlist[0].next != 0) {
@@ -33,12 +31,12 @@ static void thread_init() {
     runlist[2].next = CURCTX->next;
   } else {
     CURCTX = runlist[3].next;
-    if (CURCTX != __main__)
+    if (CURCTX != (thread_t *) &__main__)
       runlist[3].next = CURCTX->next;
   }
 }
 
-static void runlist_append(thread_t *thread)
+void runlist_append(thread_t *thread)
 {
   if (thread->priority > 3)
     return;
@@ -48,9 +46,9 @@ static void runlist_append(thread_t *thread)
   else
     runlist[thread->priority].next = thread;
   runlist[thread->priority].end = thread;
-}*/
+}
 
-void schedule() {
+/*void schedule() {
   if (CURCTX) {
     CURCTX->next = 0;
     runlist_append(CURCTX);
@@ -64,4 +62,4 @@ static void runlist_append(thread_t *thread) {
   while (*list != 0)
     list = &((*list)->next);
   *list = thread;
-}
+}*/

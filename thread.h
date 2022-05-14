@@ -30,7 +30,7 @@ extern thread_t *runlist;
       arg0, arg1, arg2, arg3, 0, 0,                               \
       startfun, (1<<24)                                           \
   };                                                              \
-  static void *__##name##__ __attribute__((section(".threads"))) = &name; \
+  static void *__##name##__ptr __attribute__((section(".threads"))) = &name; \
 
 #define THREAD(name, startfun, stacksize, arg0, arg1, arg2, arg3) \
   struct {                                                        \

@@ -23,10 +23,10 @@ __reset:
   cmp   r0, r2
   bne   .L6
 .L8:                    // Change SP to PSP
-  ldr   r0, .L3+28
-  ldr   r0, [r0]
-  msr   psp, r0
-  mrs   r0, control
+  ldr   r0, .L3+28      // Load location of __main__
+  ldr   r0, [r0]    // Load __PSP (top of __main__'s stack)
+  msr   psp, r0         // Set hardware psp to __PSP
+  mrs   r0, control     // Move control into r0
   mov   r1, #2
   orr   r0, r1
   msr   control, r0

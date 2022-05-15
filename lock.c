@@ -11,8 +11,14 @@ static int is_interrupt() {
     MUTEX
 */
 
-void mut_action(unsigned action, ...) {
+void *mut_fam[] = {
+  &mut_init,
+  &mut_lock,
+  &mut_unlock
+};
 
+void mut_action(unsigned action, ...) {
+  __asm("svc 1");
 }
 
 void sys_mut_init(mut_t *m) {

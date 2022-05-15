@@ -7,6 +7,12 @@ typedef struct mutex_st {
   thread_t *waiting;  
 } mut_t;
 
+extern void *mut_family[];
+
+void mut_init(mut_t *m);
+void mut_lock(mut_t *m);
+void mut_unlock(mut_t *m);
+
 typedef struct sem_st {
   unsigned value;
   thread_t *waiting;

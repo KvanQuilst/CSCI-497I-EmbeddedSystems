@@ -5,8 +5,8 @@
 void readTimer();
 void setPulse();
 
-THREAD(irq17, readTimer, 32, 0, 0, 0, 0);
-sem_t s;
+THREAD(irq17, readTimer, 64, 0, 0, 0, 0);
+sem_t tmr;
 
 void setup() {
   /* Enable bit 8 in AHBCLKCTRL (pg. 34) CT16B1 */
@@ -39,12 +39,15 @@ void setup() {
   /* Enable Interrupts */
   ISER.SETENA |= (1<<17) | (1<<24);
 
-  sem_init(&s, 0);
+  sem_init(&tmr, 0);
 }
 
 void IRQ17() {
   TMR16B1.IR.MR1 = 1;
-  sem_up(&s);
+  sem_up(&tmr);
+
+  /*TMR16B1.IR.MR1 = 1;
+  ADC.CR = (10 << 8) | (0 << 17) | (0 << 16) | (1 << 0) | (1 << 24);*/
 }
 
 void IRQ24() {
@@ -56,8 +59,7 @@ void IRQ24() {
 void readTimer() {
   /* Start read */
   while (1) {
-    sem_down(&s);
-    TMR16B1.IR.MR1 = 1;
+    sem_down(&tmr);
     ADC.CR = (10 << 8) | (0 << 17) | (0 << 16) | (1 << 0) | (1 << 24);
   }
 }

@@ -1,11 +1,10 @@
 #include "lock.h"
-#include "svc.h"
 
 typedef void (*SYS)(unsigned, unsigned, unsigned);
 typedef SYS *family_t;
 
 family_t families[] = {
-  sem_family
+  (family_t) sem_family
 };
 
 void svcall() {
@@ -14,6 +13,6 @@ void svcall() {
   unsigned r2 = CURCTX->sp[10];
   unsigned r3 = CURCTX->sp[11];
   unsigned char *pc = (unsigned char *) CURCTX->sp[14];
-  unsigned char *svc = *pc[-2];
-  families[svc][r0](r1, r2, r3);
+  unsigned char *svc = (unsigned char *) pc-2;
+  families[*svc][r0](r1, r2, r3);
 }

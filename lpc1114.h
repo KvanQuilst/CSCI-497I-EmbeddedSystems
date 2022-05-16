@@ -239,7 +239,7 @@ extern struct gpio GPIO0;
 extern struct gpio GPIO1;
 
 /* Ch 15, Table 219 (pg. 242) */
-struct {
+extern struct {
 
   /* Table 220 (pg. 243) */
   volatile unsigned CONSET;

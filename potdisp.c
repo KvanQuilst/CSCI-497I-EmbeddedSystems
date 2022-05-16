@@ -143,8 +143,8 @@ void IRQ15() {
     I2C0.CONCLR = (1<<3) | (1<<5);
     i++;
   } else {
-    I2C0.CONSET = (1<<4);
-    I2C0.CONCLR = (1<<2) | (1<<3) | (1<<5);
+    I2C0.DAT = 0x55;
+    I2C0.CONCLR = (1<<3) | (1<<5);
   }
 }
 
@@ -154,9 +154,6 @@ void IRQ17() {
 }
 
 void IRQ24() {
-  /* Set pulse length */  
-  /*TMR16B1.MR0.MATCH = TMR16B1.MR1.MATCH - 500 - ADC.DR0.V_VREF;
-  ADC.DR0.DONE;*/
   data = ADC.DR0.V_VREF;
   sem_up(&data_avail);
 }

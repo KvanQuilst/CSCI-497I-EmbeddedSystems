@@ -10,9 +10,9 @@ struct buffer buf = {
 
 __attribute__((constructor))
 static void i2c_init() {
+  SYSCON.PRESETCTRL.I2C_RST_N = 1;
   SYSCON.SYSAHBCLKCTRL.IOCON = 1;
   SYSCON.SYSAHBCLKCTRL.I2C = 1;
-  SYSCON.PRESETCTRL.I2C_RST_N = 1;
   IOCON.PIO0_4.FUNC = 1;
   IOCON.PIO0_4.I2CMODE = 0;
   IOCON.PIO0_5.FUNC = 1;
@@ -48,4 +48,4 @@ void i2c_write() {
   while (1)
     __asm("wfi");
 }
-THREAD(disp, i2c_write, 3, 32, 0, 0, 0, 0);
+THREAD(disp, i2c_write, 2, 32, 0, 0, 0, 0);

@@ -14,5 +14,6 @@ void svcall() {
   unsigned r3 = CURCTX->sp[11];
   unsigned char *pc = (unsigned char *) CURCTX->sp[14];
   unsigned char *svc = (unsigned char *) pc-2;
-  families[*svc][r0](r1, r2, r3);
+  if (families[*svc][r0])
+    families[*svc][r0](r1, r2, r3);
 }

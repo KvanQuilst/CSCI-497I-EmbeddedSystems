@@ -1,7 +1,7 @@
 #include "list.h"
 #include "thread.h"
 
-SYS_THREAD(__main__, 0, 3, 64, 0, 0, 0, 0);
+THREAD(__main__, 0, 3, 64, 0, 0, 0, 0);
 const char *__PSP = ((char *) &(__main__) + sizeof(__main__));
 thread_t *CURCTX = (thread_t *) (&__main__);
 priority runlist[4] = {0};

@@ -22,7 +22,12 @@ void mut_action(unsigned action, ...) {
 }
 
 void sys_mut_init(mut_t *m) {
+  __asm("cpsid i");
 
+  m->owner = 0;
+  m->waiting = 0;
+
+  __asm("cpsie i");
 }
 
 void mut_init(mut_t *m) {
@@ -50,7 +55,10 @@ void sys_mut_lock(mut_t *m) {
 }
 
 void mut_lock(mut_t *m) {
-
+  if (!is_interrupt())
+    mut_action(1, m);
+  else
+    sys_mut_lock(m);
 }
 
 void sys_mut_unlock(mut_t *m) {
@@ -68,9 +76,11 @@ void sys_mut_unlock(mut_t *m) {
 }
 
 void mut_unlock(mut_t *m) {
-
+  if (!is_interrupt())
+    mut_action(2, m);
+  else
+    sys_mut_unlock(m);
 }
-
 
 /*
     SEMAPHORE

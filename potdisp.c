@@ -1,3 +1,4 @@
+#include "i2c.h"
 #include "lpc1114.h"
 #include "thread.h"
 #include "lock.h"
@@ -5,17 +6,18 @@
 void readTimer();
 void setPulse();
 
-THREAD(irq17, readTimer, 64, 0, 0, 0, 0);
-sem_t tmr;
+THREAD(irq17, readTimer, 32, 0, 0, 0, 0);
+THREAD(irq24, setPulse, 32, 0, 0, 0, 0);
+sem_t tmr = { 0, 0 };
+sem_t data_avail = { 0, 0 };
+unsigned data;
 
 void setup() {
   /* Enable bit 8 in AHBCLKCTRL (pg. 34) CT16B1 */
   SYSCON.SYSAHBCLKCTRL.IOCON = 1;
-  SYSCON.SYSAHBCLKCTRL.CT16B1 = 1;
-  SYSCON.SYSAHBCLKCTRL.ADC = 1;
-  SYSCON.PDRUNCFG.ADC_PD = 0;
 
   /* Clock */
+  SYSCON.SYSAHBCLKCTRL.CT16B1 = 1;
   IOCON.PIO1_9.FUNC = 1;        /* Servo uses clock */
   IOCON.PIO1_9.MODE = 0;
 
@@ -29,31 +31,33 @@ void setup() {
   TMR16B1.PWMC.PWMEN0 = 1;      /* On MR0, set PIO1_9 low */
 
   /* ADC */
+  SYSCON.SYSAHBCLKCTRL.ADC = 1;
+  SYSCON.PDRUNCFG.ADC_PD = 0;
   IOCON.R_PIO0_11.FUNC = 2;
   IOCON.R_PIO0_11.MODE = 0;
   IOCON.R_PIO0_11.ADMODE = 0;
 
   ADC.CR = (10 << 8) | (0 << 17) | (0 << 16) | (1 << 0) | (1 << 24);
   ADC.INTEN.ADINTEN = (1<<0);
+  ADC.INTEN.ADGINTEN = 0;
+
+  /* Display */
 
   /* Enable Interrupts */
   ISER.SETENA |= (1<<17) | (1<<24);
-
-  sem_init(&tmr, 0);
 }
 
 void IRQ17() {
   TMR16B1.IR.MR1 = 1;
   sem_up(&tmr);
-
-  /*TMR16B1.IR.MR1 = 1;
-  ADC.CR = (10 << 8) | (0 << 17) | (0 << 16) | (1 << 0) | (1 << 24);*/
 }
 
 void IRQ24() {
   /* Set pulse length */  
-  TMR16B1.MR0.MATCH = TMR16B1.MR1.MATCH - 500 - ADC.DR0.V_VREF;
-  ADC.DR0.DONE;
+  /*TMR16B1.MR0.MATCH = TMR16B1.MR1.MATCH - 500 - ADC.DR0.V_VREF;
+  ADC.DR0.DONE;*/
+  data = ADC.DR0.V_VREF;
+  sem_up(&data_avail);
 }
 
 void readTimer() {
@@ -65,5 +69,10 @@ void readTimer() {
 }
 
 void setPulse() {
-
+  /* Set pulse length */  
+  while (1) {
+    sem_down(&data_avail);
+    TMR16B1.MR0.MATCH = TMR16B1.MR1.MATCH - 500 - data;
+    ADC.DR0.DONE;
+  }
 }

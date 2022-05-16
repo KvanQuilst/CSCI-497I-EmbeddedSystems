@@ -2,7 +2,15 @@
 /* SYSCON */
 extern struct {
   volatile unsigned SYSMEMREMAP;
-  volatile unsigned PRESETCTRL;
+
+  /* Table 9 (pg. 28) */
+  struct {
+    volatile unsigned SSP0_RST_N  : 1;
+    volatile unsigned I2C_RST_N   : 1;
+    volatile unsigned SSP1_RST_N  : 1;
+    volatile unsigned CAN_RST_N   : 1;
+    volatile unsigned             : 28;
+  } PRESETCTRL;
 
   /* Table 10 (pg. 28) */
   struct {
@@ -140,8 +148,22 @@ extern struct {
   volatile unsigned PIO2_8;
   volatile unsigned PIO2_1;
   volatile unsigned PIO0_3;
-  volatile unsigned PIO0_4;
-  volatile unsigned PIO0_5;
+
+  /* Ch 7, Table 68 (pg. 84) */
+  struct {
+    volatile unsigned FUNC    : 3;
+    volatile unsigned         : 5;
+    volatile unsigned I2CMODE : 2;
+    volatile unsigned         : 22;
+  } PIO0_4;
+
+  /* Ch 7, Table 69 (pg. 85) */
+  struct {
+    volatile unsigned FUNC    : 3;
+    volatile unsigned         : 5;
+    volatile unsigned I2CMODE : 2;
+    volatile unsigned         : 22;
+  } PIO0_5;
 
   struct {
     volatile unsigned FUNC  : 3;
@@ -215,6 +237,29 @@ struct gpio {
 
 extern struct gpio GPIO0;
 extern struct gpio GPIO1;
+
+/* Ch 15, Table 219 (pg. 242) */
+struct {
+
+  /* Table 220 (pg. 243) */
+  volatile unsigned CONSET;
+
+  volatile unsigned STAT;
+  volatile unsigned DAT;
+  volatile unsigned ADR0;
+  volatile unsigned SCLH;
+  volatile unsigned SCLL;
+  volatile unsigned CONCLR;
+  volatile unsigned MMCTRL;
+  volatile unsigned ADR1;
+  volatile unsigned ADR2;
+  volatile unsigned ADR3;
+  volatile unsigned DATA_BUFFER;
+  volatile unsigned MASK0;
+  volatile unsigned MASK1;
+  volatile unsigned MASK2;
+  volatile unsigned MASK3;
+} I2C0;
 
 /* Ch 18, Table 281 (pg. 337) */
 struct tmr16 {

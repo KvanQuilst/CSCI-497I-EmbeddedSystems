@@ -111,6 +111,6 @@ void setPulse() {
     sem_down(&data_avail);
     TMR16B1.MR0.MATCH = TMR16B1.MR1.MATCH - 500 - data;
     ADC.DR0.DONE;
-    mr0_print(data);
+    mr0_print(TMR16B1.MR0.MATCH);
   }
 }

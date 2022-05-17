@@ -1,4 +1,10 @@
-const char __6x14[2][95][6] = {
+#include "i2c.h"
+#include "lock.h"
+#include "print.h"
+
+#define ADDR 0x78
+
+const char font[2][95][6] = {
   /* Top Half */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /*  32 space */
   0x00, 0x00, 0x00, 0xfc, 0x00, 0x00, /*  33 exclam */
@@ -192,3 +198,106 @@ const char __6x14[2][95][6] = {
   0x00, 0x20, 0x20, 0x1f, 0x00, 0x00, /* 125 braceright */
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00  /* 126 asciitilde */
 };
+
+static const unsigned char ssd1306_init[] = {
+  0x80, 0xA8, 0x80, 0x3f,
+  0x80, 0xD3, 0x80, 0x00,
+  0x80, 0x40,
+  0x80, 0xA1,
+  0x80 ,0xC8,
+  0x80, 0xDA, 0x80, 0x12,
+  0x80, 0x81, 0x80, 0x7f,
+  0x80, 0xA4,
+  0x80, 0xA6,
+  0x80, 0xD5, 0x80, 0x80,
+  0x80, 0x8D, 0x80, 0x14,
+  0x80, 0xAF,
+
+  0x80, 0x21, 0x80, 0x00, 0x80, 0x7f,
+  0x80, 0x22, 0x80, 0x00, 0x80, 0x07,
+  0x80, 0x20, 0x80, 0x00,
+};
+
+static char upos[] = { 0x80, 0x22, 0x80, 0x00, 0x40, 0x00, 0x00 };
+static char bpos[] = { 0x80, 0x22, 0x80, 0x01, 0x40, 0x00, 0x00 };
+static char frame_buf[21];
+static unsigned num;
+static unsigned check;
+static sem_t convert = { 0, 0 };
+
+char scr_init(unsigned i) {
+  return ssd1306_init[i]; 
+}
+
+char send_uchars(unsigned i) {
+  if (i < sizeof(upos))
+    return upos[i];
+  i -= sizeof(upos);
+  return font[0][frame_buf[i/6]-' '][i%6];
+}
+char send_bchars(unsigned i) {
+  if (i < sizeof(bpos))
+    return bpos[i];
+  i -= sizeof(bpos);
+  return font[1][frame_buf[i/6]-' '][i%6];
+}
+
+char send_space(unsigned i) {
+  switch (i) {
+    case 1:
+      return 0x80;
+    case 2: 
+      return 0x22;
+    case 3:
+      return 0x80;
+    case 4:
+      return 0x02;
+    default: 
+      return 0x00;
+  }
+}
+
+void mr0_print(unsigned n) {
+  num = n;
+  if (!check)
+    sem_up(&convert);
+  check = 1;
+}
+
+static void mr0_convert() {
+  unsigned i;
+  unsigned s;
+  unsigned n;
+
+  i2c_write(ADDR, scr_init, sizeof(ssd1306_init));
+
+  while (1) {
+    sem_down(&convert);
+    check = 0;
+
+    for (i = 0; i < 21; i++)
+      frame_buf[i] = ' ';
+
+    frame_buf[6] = 'M';
+    frame_buf[7] = 'R';
+    frame_buf[8] = '0';
+    frame_buf[9] = ':';
+
+    i = 1; s = num;
+    s /= 10;
+    while (s != 0) {
+      s /= 10;
+      i++;
+    }
+
+    for (s = 10 + i; s > 10; s--) {
+      frame_buf[s] = '0' + (num % 10);
+      num /= 10;
+    }
+
+    i2c_write(ADDR, &send_uchars, 126+sizeof(upos));
+    i2c_write(ADDR, &send_bchars, 126+sizeof(bpos));
+    i2c_write(ADDR, &send_space, 256*8);
+  }
+}
+THREAD(disp, mr0_convert, 2, 64, 0, 0, 0, 0);

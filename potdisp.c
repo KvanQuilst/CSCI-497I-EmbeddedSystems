@@ -1,7 +1,8 @@
 #include "i2c.h"
-#include "lpc1114.h"
-#include "thread.h"
 #include "lock.h"
+#include "lpc1114.h"
+#include "print.h"
+#include "thread.h"
 
 void readTimer();
 void setPulse();
@@ -10,8 +11,6 @@ THREAD(irq17, readTimer, 1, 32, 0, 0, 0, 0);
 THREAD(irq24, setPulse, 1, 32, 0, 0, 0, 0);
 sem_t tmr = { 0, 0 };
 sem_t data_avail = { 0, 0 };
-unsigned i17 = 0;
-unsigned i24 = 0;
 unsigned data;
 
 void setup() {
@@ -100,7 +99,6 @@ void IRQ24() {
 
 void readTimer() {
   /* Start read */
-  i17 = 1;
   while (1) {
     sem_down(&tmr);
     ADC.CR = (10 << 8) | (0 << 17) | (0 << 16) | (1 << 0) | (1 << 24);
@@ -109,10 +107,10 @@ void readTimer() {
 
 void setPulse() {
   /* Set pulse length */  
-  i24 = 1;
   while (1) {
     sem_down(&data_avail);
     TMR16B1.MR0.MATCH = TMR16B1.MR1.MATCH - 500 - data;
     ADC.DR0.DONE;
+    mr0_print(data);
   }
 }

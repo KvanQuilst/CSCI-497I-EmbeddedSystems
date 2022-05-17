@@ -19,7 +19,7 @@ all: ${PROGRAM}
 .s.o:
 	${CC} ${CFLAGS} -o $@ -c $<
 
-${PROGRAM}: vector.o bootstrap.o irq.o thread.o lock.o svc.o list.o i2c.o ${PROGRAM}.o lpc1114.o
+${PROGRAM}: vector.o bootstrap.o irq.o thread.o lock.o svc.o list.o i2c.o print.o ${PROGRAM}.o lpc1114.o libgcc.o
 	${LD} ${LDFLAGS} -o $@ $^
 
 program:

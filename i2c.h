@@ -20,3 +20,5 @@ extern sem_t wait;
 void buf_push(char c);
 char buf_pop();
 unsigned buf_empty();
+
+void i2c_write(char addr, char (*underflow)(unsigned), unsigned size);

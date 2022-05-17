@@ -3,30 +3,6 @@
 #include "thread.h"
 #include "lock.h"
 
-/*static const unsigned char ssd1306_init[] = {
-  0x78,
-  0x80, 0xA8, 0x80, 0x3f,
-  0x80, 0xD3, 0x80, 0x00,
-  0x80, 0x40,
-  0x80, 0xA1,
-  0x80 ,0xC8,
-  0x80, 0xDA, 0x80, 0x12,
-  0x80, 0x81, 0x80, 0x7f,
-  0x80, 0xA4,
-  0x80, 0xA6,
-  0x80, 0xD5, 0x80, 0x80,
-  0x80, 0x8D, 0x80, 0x14,
-  0x80, 0xAF,
-
-  0x80, 0x21, 0x80, 0x00, 0x80, 0x7f,
-  0x80, 0x22, 0x80, 0x00, 0x80, 0x07,
-  0x80, 0x20, 0x80, 0x00,
-
-  0x40,
-  0x55, 0x55, 0x55, 0x55, 0x55,
-  0x55, 0x55, 0x55, 0x55, 0x55
-};*/
-
 void readTimer();
 void setPulse();
 
@@ -34,8 +10,9 @@ THREAD(irq17, readTimer, 1, 32, 0, 0, 0, 0);
 THREAD(irq24, setPulse, 1, 32, 0, 0, 0, 0);
 sem_t tmr = { 0, 0 };
 sem_t data_avail = { 0, 0 };
+unsigned i17 = 0;
+unsigned i24 = 0;
 unsigned data;
-//unsigned i = 0;
 
 void setup() {
   /* Enable bit 8 in AHBCLKCTRL (pg. 34) CT16B1 */
@@ -71,18 +48,44 @@ void setup() {
 }
 
 void IRQ15() {
-  /*if (i < sizeof(ssd1306_init)) {
-    I2C0.DAT = ssd1306_init[i];
-    I2C0.CONCLR = (1<<3) | (1<<5);
-    i++;
-  } else {
-    I2C0.DAT = 0x55;
-    I2C0.CONCLR = (1<<3) | (1<<5);
-  }*/
-  char c = buf_pop();
-  if (c != -1)
-    I2C0.DAT = c;
-  I2C0.CONCLR = (1<<3) | (1<<5);
+  switch (I2C0.STAT>>3) {
+    case 1: /* STAT condiiton has been transmitted */
+    case 2: /* Repeated START condition has been transmitted */
+
+      if (buf_empty())
+        I2C0.CONSET = STO;
+      else
+        I2C0.DAT = buf_pop();
+      I2C0.CONCLR = AA | SI | STA;
+
+      break;
+
+    case 3: /* SLA+W has been transmitted; ACK has been received */
+    case 5: /* Data byte has been trasmitted; ACK has been received */
+      
+      if (buf_empty()) {
+        sem_up(&wait);
+        I2C0.CONSET = STO;
+        I2C0.CONCLR = AA | SI | STA;  
+      } else {
+        I2C0.DAT = buf_pop();
+        I2C0.CONCLR = AA | SI | STA;
+      }
+
+      break;
+
+    case 4: /* SLA+W has been transmitted; NOT ACK has been recieved */
+    case 6: /* Data byte in DAT has been transmitted; NOT ACK has been received */
+
+      sem_up(&wait);
+      I2C0.CONSET = STO;
+      I2C0.CONCLR = AA | SI | STA;
+
+      break;
+
+    case 7: /* Arbitration lost in SLA+R/W or Data bytes */
+      break;
+  }
 }
 
 void IRQ17() {
@@ -97,6 +100,7 @@ void IRQ24() {
 
 void readTimer() {
   /* Start read */
+  i17 = 1;
   while (1) {
     sem_down(&tmr);
     ADC.CR = (10 << 8) | (0 << 17) | (0 << 16) | (1 << 0) | (1 << 24);
@@ -105,6 +109,7 @@ void readTimer() {
 
 void setPulse() {
   /* Set pulse length */  
+  i24 = 1;
   while (1) {
     sem_down(&data_avail);
     TMR16B1.MR0.MATCH = TMR16B1.MR1.MATCH - 500 - data;

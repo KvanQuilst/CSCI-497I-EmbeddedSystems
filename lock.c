@@ -124,7 +124,7 @@ static void sys_sem_up(sem_t *s) {
 
 void sem_up(sem_t *s) {
   if (!is_interrupt())
-    sem_action(1, s);
+      sem_action(1, s);
   else
     sys_sem_up(s);
 }
@@ -143,7 +143,10 @@ static void sys_sem_down(sem_t *s) {
 
 void sem_down(sem_t *s) {
   if (!is_interrupt())
-    sem_action(2, s);
+    if (s->value > 1) 
+      s->value--;
+    else
+      sem_action(2, s);
   else
     sys_sem_down(s);
 }

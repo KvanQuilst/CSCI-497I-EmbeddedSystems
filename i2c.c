@@ -25,16 +25,20 @@ static void i2c_init() {
 
 void buf_push(char c) {
   sem_down(&empty);
+  __asm("cpsid i");
   buf[bi.first] = c;
   bi.first++;
   bi.used++;
+  __asm("cpsie i");
 }
 
 char buf_pop() {
   if (bi.used != 0) {
+    __asm("cpsid i");
     char c = buf[bi.last];
     bi.last++;
     bi.used--;
+    __asm("cpsie i");
     sem_up(&empty);
     return c;
   } else 

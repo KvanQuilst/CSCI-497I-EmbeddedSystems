@@ -219,7 +219,7 @@ static const unsigned char ssd1306_init[] = {
 };
 
 static char upos[] = { 0x80, 0x22, 0x80, 0x00, 0x40, 0x00, 0x00 };
-static char bpos[] = { 0x80, 0x22, 0x80, 0x01, 0x40, 0x00, 0x00 };
+static char bpos[] = { 0x80, 0x22, 0x80, 0x00, 0x40, 0x00, 0x00 };
 static char frame_buf[21];
 static unsigned num;
 static unsigned check;
@@ -268,6 +268,9 @@ static void mr0_convert() {
   unsigned i;
   unsigned s;
   unsigned n;
+
+  for (i = 0; i < 1000000; ++i)
+    __asm("nop");
 
   i2c_write(ADDR, scr_init, sizeof(ssd1306_init));
 

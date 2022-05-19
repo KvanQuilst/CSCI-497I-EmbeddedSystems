@@ -300,7 +300,6 @@ static void mr0_convert() {
 
     i2c_write(ADDR, &send_uchars, 126+sizeof(upos));
     i2c_write(ADDR, &send_bchars, 126+sizeof(bpos));
-    i2c_write(ADDR, &send_space, 256*8);
   }
 }
 THREAD(disp, mr0_convert, 2, 64, 0, 0, 0, 0);
